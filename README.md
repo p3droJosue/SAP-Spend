@@ -52,3 +52,88 @@ FBL3N variant: LO_FBL3N
 
 ZSE16 access for EKKO/EKPO extracts
 
+⚙️ Installation
+# (Recommended) create & activate a virtual env
+python -m venv .venv
+.venv\Scripts\activate
+
+# install dependencies
+pip install -r requirements.txt
+
+▶️ Usage (CLI)
+Run the full pipeline in console mode:
+python P2P_Spend.py
+
+You’ll be prompted for:
+Download folder (root path where monthly subfolders & outputs go)
+
+Date range: dd.mm.yyyy → dd.mm.yyyy
+
+Outputs:
+
+Spend Data Base/<Mes>_<Año>/PowerBI_DataBase.csv
+
+Historical “YT” CSVs under each report’s _YT subfolder
+
+
+🪟 Usage (GUI)
+Launch the Tkinter app:
+python run_p2p_spend_gui.py
+Pick a destination folder
+
+Enter Desde / Hasta dates (dd.mm.yyyy)
+
+Click Ejecutar and watch progress in the log panel
+
+Build single‑file .exe (optional)
+pyinstaller --clean --onefile --windowed run_p2p_spend_gui.py
+# Result: dist/run_p2p_spend_gui.exe
+
+
+pyinstaller --clean --onefile --windowed run_p2p_spend_gui.py
+# Result: dist/run_p2p_spend_gui.exe
+
+Rebuild after code changes by re‑running the same command.
+
+
+🧠 How it works (High‑level)
+
+Chunked SAP downloads: date intervals are split to avoid SAP limits.
+
+EKKO/EKPO: Purchase orders & items; copied via ZSE16 and clipboard batching.
+
+FBL1N/FBL3N: Vendor and G/L line items; saved to XLSX by SAP GUI.
+
+Cleaning: Type casts, key creation (PO_Item), date parsing, currency to float.
+
+Merging: Non‑PO + PO joins (EKKO/EKPO), vendor/category/WBS lookups via catalog files.
+
+Exports: PowerBI_DataBase.csv for the selected period, and append to long‑term CSVs.
+
+
+🔧 Configuration hotspots (adjust for your SAP)
+
+Company code mask in FBL1N / FBL3N: "MX**" (change if needed)
+
+Document types (e.g., KG, KR, KA, RE, X1, ZX)
+
+Account ranges used in FBL3N filter
+
+Layout variants (FBL1N_HRQ, LO_FBL3N) — must exist in your SAP user
+
+Date chunk size in downloads (e.g., 60 days for FBL1N; 16 for FBL3N)
+
+Catalog files & sheet names in Catalogues/
+
+
+🧪 Troubleshooting
+
+InvalidIndexError during .map() → ensure catalog keys are unique. The GUI pipeline de‑duplicates via drop_duplicates before mapping.
+
+FileNotFoundError when creating subfolders → Paths with mixed \\ and /. The code normalizes paths; ensure your base folder exists and you have write permissions.
+
+Excel left open / locked files → The scripts force‑kill Excel after exports to avoid locks.
+
+PyInstaller can’t find the script → run from the correct folder or pass the full path; delete build/, dist/, *.spec and rebuild with --clean if necessary.
+
+Hidden imports (PyInstaller warnings) → add --hidden-import=<module> if a missing module is reported at runtime.
