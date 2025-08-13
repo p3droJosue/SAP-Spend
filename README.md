@@ -30,3 +30,25 @@ SPEND CODE/
 │  └─ CAPEX 2018-2025.xlsx (WBS mapping)
 
 └─ README.md               # This file
+
+
+🖥️ Requirements
+
+Windows with SAP GUI for Windows installed and configured.
+
+SAP GUI Scripting enabled
+
+On client: Options → Accessibility & Scripting → Enable scripting
+
+On server: sapgui/user_scripting = TRUE (Basis setting)
+
+Python 3.10+ (tested on 3.13.5) and pip
+
+Access to the SAP variants used in scripts (examples):
+
+FBL1N variant: FBL1N_HRQ
+
+FBL3N variant: LO_FBL3N
+
+ZSE16 access for EKKO/EKPO extracts
+
